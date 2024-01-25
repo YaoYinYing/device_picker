@@ -1,5 +1,5 @@
 # Device Picker
-<p align="center"><img width="250" height="250" margin-right="100%" src="image/logo.png"></p>
+<p align="center"><img width="250" height="250" margin-right="100%" src="https://raw.githubusercontent.com/YaoYinYing/device_picker/main/image/logo.png"></p>
 
 ## Description
 
