@@ -1,0 +1,60 @@
+name: Python Package
+
+on:
+  push:
+    paths:
+      - '.github/workflows/python-package.yml'
+      - 'device_picker/*'
+
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-13-xlarge, macOS-latest]
+        
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' # or any version you prefer
+
+      - name: Get architecture
+        id: get-arch
+        run: echo "ARCH=$(uname -m)" >> $GITHUB_ENV
+      - name: Install dependencies for Intel
+        if: env.ARCH != 'arm64'
+        run: pip install .[tensorflow_support,torch_support]
+      - name: Install dependencies for Apple Silicon
+        if: env.ARCH == 'arm64'
+        run: pip install .[tensorflow_metal_support,torch_support]
+      - name: Run tests
+        run: |
+          make test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' # match the version used in testing
+      - name: Install pypa/build and Build package
+        run: >-
+          make build
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
