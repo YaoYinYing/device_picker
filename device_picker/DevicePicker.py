@@ -48,7 +48,7 @@ class DevicePicker:
         if (not device or device.startswith("cuda")) and torch.cuda.is_available():
             print("Use CUDA")
             return torch.device(device)
-        elif (
+        if (
             (not device or device.startswith("mps"))
             and torch.backends.mps.is_available()
             and torch.backends.mps.is_built()
@@ -56,9 +56,9 @@ class DevicePicker:
         ):
             print("Use MPS")
             return torch.device("mps")
-        else:
-            print("Use CPU")
-            return torch.device("cpu")
+
+        print("Use CPU")
+        return torch.device("cpu")
 
     def tensorflow_device(self, device: str = "") -> str:
         device = device.upper()
@@ -72,7 +72,13 @@ class DevicePicker:
     def jax_device(self, device: str = "") -> str:
         if not self.frameworks["jax"]:
             raise ImportError("JAX is not available in this environment.")
-        if not device:
-            device = "gpu" if jax.devices("gpu") else "cpu"
-        print(f"Use {device}")
-        return device
+        if not device and jax.default_backend() == 'METAL':
+            print(f"Use Metal")
+            return jax.devices()
+        if (not device or device.lower().startswith('cuda') or device.lower().startswith('gpu') ) and jax.default_backend() == 'gpu':
+            print(f"Use GPU")
+            return jax.devices()
+                
+        print("Use CPU")
+        return jax.devices('cpu')
+
