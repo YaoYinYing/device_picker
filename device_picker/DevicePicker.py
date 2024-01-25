@@ -72,7 +72,7 @@ class DevicePicker:
     def jax_device(self, device: str = "") -> str:
         if not self.frameworks["jax"]:
             raise ImportError("JAX is not available in this environment.")
-        if not device and jax.default_backend() == 'METAL':
+        if (not device or device.lower().startswith('metal') or device.lower() == 'mps') and jax.default_backend() == 'METAL':
             print(f"Use Metal")
             return jax.devices()
         if (not device or device.lower().startswith('cuda') or device.lower().startswith('gpu') ) and jax.default_backend() == 'gpu':
