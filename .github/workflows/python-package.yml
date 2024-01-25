@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13-xlarge, macOS-latest]
+        os: [macOS-latest]
         
     runs-on: ${{ matrix.os }}
 
@@ -32,10 +32,15 @@ jobs:
         run: echo "ARCH=$(uname -m)" >> $GITHUB_ENV
       - name: Install dependencies for Intel
         if: env.ARCH != 'arm64'
-        run: pip install .[tensorflow_support,torch_support]
+        run: |
+          uname -a
+          pip install .[tensorflow_support,torch_support]
+          
       - name: Install dependencies for Apple Silicon
         if: env.ARCH == 'arm64'
-        run: pip install .[tensorflow_metal_support,torch_support]
+        run: |
+          uname -a
+          pip install .[tensorflow_metal_support,torch_support]
       - name: Run tests
         run: |
           make test

@@ -26,7 +26,7 @@ jax = { version = "^0.2.12", optional = true }
 [tool.poetry.extras]
 torch_support = ["torch"]
 tensorflow_support = ["tensorflow"]
-tensorflow_metal_support = ["tensorflow-metal"]
+tensorflow_metal_support = ["tensorflow", "tensorflow-metal"]
 
 
 jax_support = ["jax"]
