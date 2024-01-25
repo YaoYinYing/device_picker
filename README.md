@@ -1,5 +1,4 @@
 # Device Picker
-<p align="center"><img width="250" height="250" margin-right="100%" src="image/logo.png"></p>
 
 ## Description
 
