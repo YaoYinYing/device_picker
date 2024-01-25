@@ -1,3 +1,6 @@
+import platform
+
+
 class DevicePicker:
     """
     A class to pick the appropriate device for machine learning tasks
@@ -49,6 +52,7 @@ class DevicePicker:
             (not device or device.startswith("mps"))
             and torch.backends.mps.is_available()
             and torch.backends.mps.is_built()
+            and platform.machine() == 'arm64'
         ):
             print("Use MPS")
             return torch.device("mps")
